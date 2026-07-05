@@ -1,42 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Viral Social App</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viral TON Social</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <!-- HEADER -->
-    <div class="header">
-      <h2>🔥 Viral Social</h2>
-      <div class="balances">
-        <div>💳 Credits: <span id="credits">0</span></div>
-        <div>💰 TON: <span id="ton">0</span></div>
-      </div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <h2>⚡ ViralTON</h2>
+      <p class="sub">Earn • Post • Like • Withdraw TON</p>
     </div>
 
-    <!-- NAV -->
-    <div class="nav">
-      <button onclick="showTab('feed')">Feed</button>
-      <button onclick="showTab('create')">Create</button>
-      <button onclick="showTab('tasks')">Tasks</button>
-      <button onclick="showTab('store')">Store</button>
-      <button onclick="showTab('profile')">Profile</button>
+    <div class="wallet">
+      <div>💳 <span id="credits">0</span></div>
+      <div>💰 <span id="ton">0</span></div>
     </div>
+  </div>
 
-    <!-- FEED -->
-    <div id="feed" class="tab active">
-      <h3>🔥 Trending Posts</h3>
-      <div id="posts"></div>
-    </div>
+  <!-- FEED -->
+  <div id="feed" class="page active"></div>
 
-    <!-- CREATE POST -->
-    <div id="create" class="tab">
+  <!-- CREATE BUTTON (FLOAT) -->
+  <button class="fab" onclick="openCreate()">＋</button>
+
+  <!-- CREATE MODAL -->
+  <div id="createModal" class="modal hidden">
+    <div class="modal-content">
+
       <h3>Create Post</h3>
 
       <select id="category">
@@ -47,39 +44,29 @@
         <option>Game</option>
       </select>
 
-      <input id="title" placeholder="Post title"/>
-      <textarea id="desc" placeholder="Description"></textarea>
-      <input type="file" id="image"/>
+      <input id="title" placeholder="Title">
+      <textarea id="desc" placeholder="Write something..."></textarea>
+
+      <input type="file" id="image">
 
       <button onclick="publishPost()">🚀 Publish (1 Credit)</button>
+      <button class="close" onclick="closeCreate()">Close</button>
 
-      <p id="postMsg"></p>
+      <p id="msg"></p>
+
     </div>
-
-    <!-- TASKS -->
-    <div id="tasks" class="tab">
-      <h3>🎯 Tasks</h3>
-      <button onclick="watchAd()">Watch Ad (+0.1 Credit)</button>
-    </div>
-
-    <!-- STORE -->
-    <div id="store" class="tab">
-      <h3>🛒 Buy Credits</h3>
-
-      <div class="card">10 Credits → 0.2 TON <button>Buy</button></div>
-      <div class="card">50 Credits → 1 TON <button>Buy</button></div>
-      <div class="card">100 Credits → 2 TON <button>Buy</button></div>
-    </div>
-
-    <!-- PROFILE -->
-    <div id="profile" class="tab">
-      <h3>👤 Profile</h3>
-      <p>Referral Code: <b id="refCode">ABC123</b></p>
-      <p>Total Referrals: 0</p>
-    </div>
-
   </div>
 
-  <script src="app.js"></script>
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button onclick="showFeed()">🏠</button>
+    <button onclick="showTasks()">🎯</button>
+    <button onclick="showStore()">🛒</button>
+    <button onclick="showProfile()">👤</button>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
-  </html>
+</html>
