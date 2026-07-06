@@ -2,7 +2,7 @@ let credits = 10;
 let ton = 0;
 
 let posts = [
-  {title:"Welcome to ViralTON 🔥", desc:"Start posting and earning", category:"Crypto", likes:12}
+  {title:"Welcome to Viral Earn 🔥", desc:"Earn TON from likes", likes:3, category:"Crypto"}
 ];
 
 function updateUI(){
@@ -11,6 +11,14 @@ function updateUI(){
   renderFeed();
 }
 
+function showTab(tab){
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
+
+}
+
+/* FEED */
 function renderFeed(){
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
@@ -18,9 +26,9 @@ function renderFeed(){
   posts.forEach((p,i)=>{
     feed.innerHTML += `
       <div class="post">
-        <h4>${p.title}</h4>
-        <div class="tag">${p.category}</div>
+        <b>${p.title}</b>
         <p>${p.desc}</p>
+        <small>${p.category}</small>
 
         <button onclick="likePost(${i})">❤️ Like (${p.likes})</button>
       </div>
@@ -28,6 +36,7 @@ function renderFeed(){
   });
 }
 
+/* LIKE SYSTEM */
 function likePost(i){
   posts[i].likes++;
 
@@ -35,14 +44,7 @@ function likePost(i){
   updateUI();
 }
 
-function openCreate(){
-  document.getElementById("createModal").classList.remove("hidden");
-}
-
-function closeCreate(){
-  document.getElementById("createModal").classList.add("hidden");
-}
-
+/* POST SYSTEM */
 function publishPost(){
 
   const title = document.getElementById("title").value;
@@ -63,15 +65,16 @@ function publishPost(){
     likes: 0
   });
 
-  document.getElementById("msg").innerText = "✅ Posted successfully!";
-  closeCreate();
+  document.getElementById("msg").innerText = "✅ Posted successfully";
   updateUI();
 }
 
-/* NAV (placeholders for next backend pages) */
-function showFeed(){}
-function showTasks(){}
-function showStore(){}
-function showProfile(){}
+/* ADS TASK */
+function watchAd(){
+  credits += 0.1;
+  alert("+0.1 credit added");
+  updateUI();
+}
 
 updateUI();
+renderFeed();
