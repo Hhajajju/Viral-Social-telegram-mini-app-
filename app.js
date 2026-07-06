@@ -1,80 +1,197 @@
-let credits = 10;
-let ton = 0;
+// ==========================
+// SIMPLE LOCAL DATABASE
+// ==========================
+let db = {
+  users: [],
+  posts: [],
+  currentUser: null
+};
 
-let posts = [
-  {title:"Welcome to Viral Earn 🔥", desc:"Earn TON from likes", likes:3, category:"Crypto"}
-];
-
-function updateUI(){
-  document.getElementById("credits").innerText = credits;
-  document.getElementById("ton").innerText = ton.toFixed(2);
-  renderFeed();
+// Load from storage
+function loadDB() {
+  let data = localStorage.getItem("viral_app_db");
+  if (data) db = JSON.parse(data);
 }
 
-function showTab(tab){
-
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.getElementById(tab).classList.add("active");
-
+// Save to storage
+function saveDB() {
+  localStorage.setItem("viral_app_db", JSON.stringify(db));
 }
 
-/* FEED */
-function renderFeed(){
-  const feed = document.getElementById("feed");
-  feed.innerHTML = "";
+// ==========================
+// INIT USER (AUTO LOGIN)
+// ==========================
+function initUser() {
+  loadDB();
 
-  posts.forEach((p,i)=>{
-    feed.innerHTML += `
-      <div class="post">
-        <b>${p.title}</b>
-        <p>${p.desc}</p>
-        <small>${p.category}</small>
+  if (!db.currentUser) {
+    let user = {
+      id: Date.now(),
+      credit: 1,
+      ton: 0,
+      referrals: 0,
+      likedPosts: []
+    };
 
-        <button onclick="likePost(${i})">❤️ Like (${p.likes})</button>
-      </div>
-    `;
-  });
+    db.currentUser = user;
+    db.users.push(user);
+    saveDB();
+  }
 }
 
-/* LIKE SYSTEM */
-function likePost(i){
-  posts[i].likes++;
+// ==========================
+// UPDATE BALANCE DISPLAY
+// ==========================
+function updateBalanceUI() {
+  loadDB();
 
-  ton += 0.01; // reward simulation
-  updateUI();
+  let creditEls = document.querySelectorAll(".credit-balance");
+  let tonEls = document.querySelectorAll(".ton-balance");
+
+  creditEls.forEach(el => el.innerText = db.currentUser.credit);
+  tonEls.forEach(el => el.innerText = db.currentUser.ton);
 }
 
-/* POST SYSTEM */
-function publishPost(){
+// ==========================
+// CREATE POST
+// ==========================
+function createPost(title, category, image = "") {
+  loadDB();
 
-  const title = document.getElementById("title").value;
-  const desc = document.getElementById("desc").value;
-  const category = document.getElementById("category").value;
+  let post = {
+    id: Date.now(),
+    title,
+    category,
+    image,
+    likes: 0,
+    owner: db.currentUser.id
+  };
 
-  if(credits < 1){
-    document.getElementById("msg").innerText = "❌ Insufficient credits";
+  db.posts.unshift(post);
+  saveDB();
+}
+
+// ==========================
+// LIKE POST (NO DOUBLE LIKE)
+// ==========================
+function likePost(postId) {
+  loadDB();
+
+  let user = db.currentUser;
+  let post = db.posts.find(p => p.id === postId);
+
+  if (!post) return;
+
+  if (user.likedPosts.includes(postId)) {
+    alert("Already liked!");
     return;
   }
 
-  credits -= 1;
+  post.likes += 1;
+  user.likedPosts.push(postId);
 
-  posts.unshift({
-    title,
-    desc,
-    category,
-    likes: 0
+  saveDB();
+  renderFeed();
+}
+
+// ==========================
+// RENDER FEED
+// ==========================
+function renderFeed() {
+  loadDB();
+
+  let container = document.getElementById("feedContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  db.posts.forEach(post => {
+    let div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <h3>${post.title}</h3>
+      <small>${post.category}</small>
+      <p>Likes: ${post.likes}</p>
+      <button onclick="likePost(${post.id})">Like</button>
+    `;
+
+    container.appendChild(div);
   });
-
-  document.getElementById("msg").innerText = "✅ Posted successfully";
-  updateUI();
 }
 
-/* ADS TASK */
-function watchAd(){
-  credits += 0.1;
-  alert("+0.1 credit added");
-  updateUI();
+// ==========================
+// CREATE POST HANDLER
+// ==========================
+function handleCreatePost() {
+  let title = document.getElementById("postTitle").value;
+  let category = document.getElementById("postCategory").value;
+
+  if (!title) return alert("Enter title");
+
+  createPost(title, category);
+  alert("Post created!");
+
+  document.getElementById("postTitle").value = "";
+  renderFeed();
 }
 
-updateUI();
-renderFeed();
+// ==========================
+// TASK REWARD SYSTEM
+// ==========================
+function rewardTask(amount) {
+  loadDB();
+  db.currentUser.credit += amount;
+  saveDB();
+  updateBalanceUI();
+}
+
+// ==========================
+// TON TOPUP (SIMULATION)
+// ==========================
+function topUpTon(amount) {
+  loadDB();
+  db.currentUser.ton += amount;
+  saveDB();
+  updateBalanceUI();
+}
+
+// ==========================
+// WITHDRAW REQUEST
+// ==========================
+function withdraw(amount, address) {
+  loadDB();
+
+  if (db.currentUser.ton < amount) {
+    alert("Not enough TON");
+    return;
+  }
+
+  db.currentUser.ton -= amount;
+
+  alert("Withdraw request sent (pending approval)");
+
+  saveDB();
+  updateBalanceUI();
+}
+
+// ==========================
+// REFERRAL SYSTEM (SIMPLIFIED)
+// ==========================
+function addReferral() {
+  loadDB();
+  db.currentUser.referrals += 1;
+  db.currentUser.credit += 0.2;
+
+  saveDB();
+  updateBalanceUI();
+}
+
+// ==========================
+// INIT APP ON PAGE LOAD
+// ==========================
+window.onload = function () {
+  initUser();
+  updateBalanceUI();
+  renderFeed();
+};renderFeed();
