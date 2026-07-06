@@ -3,66 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral TON Social</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Viral Social Earn</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Telegram Mini App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div>
-      <h2>⚡ ViralTON</h2>
-      <p class="sub">Earn • Post • Like • Withdraw TON</p>
-    </div>
+  <!-- HEADER -->
+  <div class="header">
+    <h2>🔥 Viral Earn</h2>
 
-    <div class="wallet">
-      <div>💳 <span id="credits">0</span></div>
-      <div>💰 <span id="ton">0</span></div>
+    <div class="balances">
+      <div>💳 Credits: <span id="credits">10</span></div>
+      <div>💰 TON: <span id="ton">0.00</span></div>
     </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button onclick="showTab('feed')">Feed</button>
+    <button onclick="showTab('create')">Post</button>
+    <button onclick="showTab('tasks')">Tasks</button>
+    <button onclick="showTab('store')">Store</button>
+    <button onclick="showTab('ref')">Refer</button>
   </div>
 
   <!-- FEED -->
-  <div id="feed" class="page active"></div>
+  <div id="feed" class="tab active"></div>
 
-  <!-- CREATE BUTTON (FLOAT) -->
-  <button class="fab" onclick="openCreate()">＋</button>
+  <!-- CREATE -->
+  <div id="create" class="tab">
 
-  <!-- CREATE MODAL -->
-  <div id="createModal" class="modal hidden">
-    <div class="modal-content">
+    <h3>Create Post</h3>
 
-      <h3>Create Post</h3>
+    <select id="category">
+      <option>Crypto</option>
+      <option>Music</option>
+      <option>Sport</option>
+      <option>Entertainment</option>
+      <option>Game</option>
+    </select>
 
-      <select id="category">
-        <option>Crypto</option>
-        <option>Music</option>
-        <option>Sport</option>
-        <option>Entertainment</option>
-        <option>Game</option>
-      </select>
+    <input id="title" placeholder="Title">
+    <textarea id="desc" placeholder="Description"></textarea>
 
-      <input id="title" placeholder="Title">
-      <textarea id="desc" placeholder="Write something..."></textarea>
+    <button onclick="publishPost()">🚀 Publish (1 Credit)</button>
 
-      <input type="file" id="image">
-
-      <button onclick="publishPost()">🚀 Publish (1 Credit)</button>
-      <button class="close" onclick="closeCreate()">Close</button>
-
-      <p id="msg"></p>
-
-    </div>
+    <p id="msg"></p>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <button onclick="showFeed()">🏠</button>
-    <button onclick="showTasks()">🎯</button>
-    <button onclick="showStore()">🛒</button>
-    <button onclick="showProfile()">👤</button>
+  <!-- TASKS -->
+  <div id="tasks" class="tab">
+    <h3>🎯 Earn Credits</h3>
+
+    <button onclick="watchAd()">Watch Ad (+0.1 credit)</button>
+  </div>
+
+  <!-- STORE -->
+  <div id="store" class="tab">
+
+    <h3>🛒 Buy Credits</h3>
+
+    <div class="card">10 Credits → 0.2 TON <button>Buy</button></div>
+    <div class="card">50 Credits → 1 TON <button>Buy</button></div>
+    <div class="card">100 Credits → 2 TON <button>Buy</button></div>
+
+  </div>
+
+  <!-- REFERRAL -->
+  <div id="ref" class="tab">
+
+    <h3>👥 Refer & Earn</h3>
+
+    <p>Your code: <b id="refcode">ABC123</b></p>
+
+    <p>Earn: +0.2 credit + 0.01 TON per valid referral</p>
+
   </div>
 
 </div>
